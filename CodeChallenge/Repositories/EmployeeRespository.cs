@@ -32,9 +32,24 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
+        public Employee GetDirectReports(string id)
+        {
+            return _employeeContext.Employees
+                .Include(e => e.DirectReports)
+                .SingleOrDefault(e => e.EmployeeId == id);
+        }
+
         public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
+        }
+
+        // Added to enable retaining manager linkages for the update test case
+        public Employee Update(Employee existingEmployee, Employee newEmployee)
+        {
+            newEmployee.EmployeeId = existingEmployee.EmployeeId;
+            _employeeContext.Entry(existingEmployee).CurrentValues.SetValues(newEmployee);
+            return existingEmployee;
         }
 
         public Employee Remove(Employee employee)

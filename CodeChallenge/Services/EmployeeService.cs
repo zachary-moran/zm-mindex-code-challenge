@@ -44,16 +44,11 @@ namespace CodeChallenge.Services
         {
             if(originalEmployee != null)
             {
-                _employeeRepository.Remove(originalEmployee);
                 if (newEmployee != null)
-                {
-                    // ensure the original has been removed, otherwise EF will complain another entity w/ same id already exists
-                    _employeeRepository.SaveAsync().Wait();
+                    _employeeRepository.Update(originalEmployee, newEmployee);
+                else
+                    _employeeRepository.Remove(originalEmployee);
 
-                    _employeeRepository.Add(newEmployee);
-                    // overwrite the new id with previous employee id
-                    newEmployee.EmployeeId = originalEmployee.EmployeeId;
-                }
                 _employeeRepository.SaveAsync().Wait();
             }
 
